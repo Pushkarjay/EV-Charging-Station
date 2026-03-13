@@ -7,7 +7,7 @@ A full-stack web application integrating data science and machine learning to he
 This project includes comprehensive documentation across multiple technical domains:
 
 ### Core Requirements & Architecture
-- **[SRS.md](SRS.md)** - Software Requirements Specification (11 comprehensive sections)
+- **[SRS.md](Documnets/SRS.md)** - Software Requirements Specification (11 comprehensive sections)
   - Introduction and project scope
   - Overall system description and user classes
   - Complete system features with functional requirements
@@ -19,7 +19,7 @@ This project includes comprehensive documentation across multiple technical doma
   - Future enhancements and project timeline
 
 ### System Design & Architecture
-- **[SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md)** - Complete system architecture documentation
+- **[SYSTEM_ARCHITECTURE.md](Documnets/SYSTEM_ARCHITECTURE.md)** - Complete system architecture documentation
   - High-level architecture overview with diagrams
   - Component descriptions (Frontend, Backend, Database, ML)
   - Technology stack details
@@ -30,14 +30,14 @@ This project includes comprehensive documentation across multiple technical doma
   - Disaster recovery and failover strategies
 
 ### Data & Processes
-- **[DATA_FLOW_DIAGRAMS.md](DATA_FLOW_DIAGRAMS.md)** - Complete DFD documentation
+- **[DATA_FLOW_DIAGRAMS.md](Documnets/DATA_FLOW_DIAGRAMS.md)** - Complete DFD documentation
   - DFD Level 0: Context diagram
   - DFD Level 1: Main processes
   - DFD Level 2: Detailed process flows
   - External entities and data stores
   - Detailed process descriptions
 
-- **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** - Database design and specifications
+- **[DATABASE_SCHEMA.md](Documnets/DATABASE_SCHEMA.md)** - Database design and specifications
   - Entity Relationship Diagram (ERD) with detailed explanations
   - Complete table schema definitions (9 tables)
   - Column specifications and constraints
@@ -47,7 +47,7 @@ This project includes comprehensive documentation across multiple technical doma
   - Example queries and view definitions
 
 ### Machine Learning & Data Science
-- **[ML_PIPELINE.md](ML_PIPELINE.md)** - ML pipeline and data science workflow
+- **[ML_PIPELINE.md](Documnets/ML_PIPELINE.md)** - ML pipeline and data science workflow
   - End-to-end ML pipeline overview
   - Data ingestion from multiple sources
   - Data preprocessing and cleaning strategies
@@ -60,7 +60,7 @@ This project includes comprehensive documentation across multiple technical doma
   - Python implementation code examples
 
 ### Project Management
-- **[PROJECT_TIMELINE.md](PROJECT_TIMELINE.md)** - Project timeline and milestones
+- **[PROJECT_TIMELINE.md](Documnets/PROJECT_TIMELINE.md)** - Project timeline and milestones
   - 14-week project schedule (Jan 10 - Mar 28, 2026)
   - Detailed phase breakdown
   - Weekly task distribution
@@ -185,7 +185,7 @@ Each documentation file is independently comprehensive yet integrated:
 - **Weeks 11-12:** Deployment & Documentation
 - **Weeks 13-14:** Final Adjustments & Submission
 
-See [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md) for detailed schedule.
+See [PROJECT_TIMELINE.md](Documnets/PROJECT_TIMELINE.md) for detailed schedule.
 
 ## 🔐 Security & Compliance
 
@@ -223,8 +223,8 @@ The system is designed for deployment on **Google Cloud Platform** with:
 ## 📖 Quick Start
 
 1. **Review Documentation:**
-   - Start with [SRS.md](SRS.md) for complete specifications
-   - Then [SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md) for design
+   - Start with [SRS.md](Documnets/SRS.md) for complete specifications
+   - Then [SYSTEM_ARCHITECTURE.md](Documnets/SYSTEM_ARCHITECTURE.md) for design
 
 2. **Set Up Development:**
    - Clone the repository
