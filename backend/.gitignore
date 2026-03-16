@@ -1,0 +1,17 @@
+charging_station.db
+__pycache__/
+*.pyc
+.env
+.venv/
+env/
+venv/
+ENV/
+.idea/
+.vscode/
+*.egg-info/
+dist/
+build/
+.DS_Store
+.pytest_cache/
+.coverage
+htmlcov/
