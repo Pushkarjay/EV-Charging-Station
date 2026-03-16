@@ -1,0 +1,66 @@
+.theme-light {
+  color-scheme: light;
+}
+
+.theme-dark {
+  color-scheme: dark;
+  @apply bg-accent-900 text-white;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .sm-hide {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .md-hide {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lg-hide {
+    @apply hidden;
+  }
+}
+
+/* Loading skeleton */
+.skeleton {
+  @apply bg-accent-200 animate-pulse;
+}
+
+.skeleton-text {
+  @apply skeleton h-4 rounded mb-2;
+}
+
+.skeleton-avatar {
+  @apply skeleton w-12 h-12 rounded-full;
+}
+
+.skeleton-card {
+  @apply skeleton h-48 rounded-lg;
+}
+
+/* Accessibility */
+.focus-visible {
+  @apply outline-none ring-2 ring-offset-2 ring-primary-500;
+}
+
+.sr-only {
+  @apply absolute w-1 h-1 p-0 -m-1 overflow-hidden clip-path-inset;
+}
+
+/* Transitions */
+.transition-fast {
+  @apply transition-all duration-150;
+}
+
+.transition-normal {
+  @apply transition-all duration-300;
+}
+
+.transition-slow {
+  @apply transition-all duration-500;
+}
