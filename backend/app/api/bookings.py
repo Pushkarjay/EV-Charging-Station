@@ -7,6 +7,8 @@ from app.schemas import (
 )
 from app.models import Booking, Station, User
 from app.services.database import get_db
+from app.services.email import SMTPEmailService, EmailTemplates, EmailNotificationService
+import asyncio
 
 router = APIRouter()
 
@@ -16,7 +18,7 @@ async def create_booking(
     user_id: int,
     db: Session = Depends(get_db)
 ):
-    """Create a new booking"""
+    """Create a new booking and send confirmation email"""
     # Verify station exists and has availability
     station = db.query(Station).filter(Station.id == booking.station_id).first()
     if not station:
@@ -29,6 +31,14 @@ async def create_booking(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No available chargers at this station"
+        )
+    
+    # Get user for email
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
         )
     
     # Calculate duration and estimated cost
@@ -55,6 +65,32 @@ async def create_booking(
     db.add(new_booking)
     db.commit()
     db.refresh(new_booking)
+    
+    # Send confirmation email asynchronously
+    try:
+        email_service = SMTPEmailService()
+        subject, html_body, text_body = EmailTemplates.booking_confirmation(
+            user_name=user.full_name or user.email,
+            station_name=station.name,
+            booking_id=str(new_booking.id),
+            start_time=new_booking.start_time.strftime("%Y-%m-%d %H:%M"),
+            end_time=new_booking.end_time.strftime("%Y-%m-%d %H:%M"),
+            total_price=new_booking.total_price,
+            confirmation_link=f"https://evcharge.app/booking/{new_booking.id}"
+        )
+        
+        # Send email in background (non-blocking)
+        asyncio.create_task(email_service.send_email(
+            to=user.email,
+            subject=subject,
+            html_body=html_body,
+            text_body=text_body
+        ))
+    except Exception as e:
+        # Log error but don't fail booking creation if email fails
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Failed to send booking confirmation email: {str(e)}")
     
     return BookingResponse.from_orm(new_booking)
 
@@ -118,7 +154,7 @@ async def update_booking(
 
 @router.delete("/{booking_id}")
 async def cancel_booking(booking_id: int, db: Session = Depends(get_db)):
-    """Cancel a booking"""
+    """Cancel a booking and send cancellation email"""
     booking = db.query(Booking).filter(Booking.id == booking_id).first()
     
     if not booking:
@@ -133,13 +169,33 @@ async def cancel_booking(booking_id: int, db: Session = Depends(get_db)):
             detail="Cannot cancel completed booking"
         )
     
-    # Update station availability
+    # Get user and station
+    user = db.query(User).filter(User.id == booking.user_id).first()
     station = db.query(Station).filter(Station.id == booking.station_id).first()
+    
+    # Update station availability
     if station:
         station.available_chargers += 1
     
     booking.status = "cancelled"
     db.commit()
+    
+    # Send cancellation email asynchronously
+    try:
+        if user and station:
+            email_notifier = EmailNotificationService()
+            asyncio.create_task(email_notifier.send_booking_cancellation(
+                to=user.email,
+                user_name=user.full_name or user.email,
+                station_name=station.name,
+                booking_id=str(booking.id),
+                refund_amount=booking.total_price
+            ))
+    except Exception as e:
+        # Log error but don't fail cancellation if email fails
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Failed to send booking cancellation email: {str(e)}")
     
     return {"message": "Booking cancelled successfully"}
 

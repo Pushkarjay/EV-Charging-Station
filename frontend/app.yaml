@@ -1,0 +1,16 @@
+runtime: nodejs18
+
+env: standard
+entrypoint: npm start
+
+env_variables:
+  NEXT_PUBLIC_API_URL: "https://ev-backend-[YOUR_BACKEND_URL]/api"
+  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I"
+
+inbound_services:
+  - cloud_trace
+  - cloud_health_check
+
+automatic_scaling:
+  min_instances: 1
+  max_instances: 100

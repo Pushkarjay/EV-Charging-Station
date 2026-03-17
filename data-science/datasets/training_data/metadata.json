@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-03-17T21:56:16.725228",
+  "n_records": 5000,
+  "n_stations": 25,
+  "time_period": {
+    "start": "2025-01-01 00:38:00",
+    "end": "2025-12-30 23:35:00"
+  },
+  "datasets": {
+    "timeseries": "data-science/datasets/training_data\\timeseries_data.csv",
+    "daily_aggregated": "data-science/datasets/training_data\\daily_aggregated_data.csv",
+    "training_features": "data-science/datasets/training_data\\training_features.csv"
+  },
+  "data_statistics": {
+    "occupancy_rate_mean": 0.4568608333333334,
+    "occupancy_rate_std": 0.3017119549118324,
+    "avg_revenue_per_station": 2094.6071509363796,
+    "total_kwh": 209460.71509363796
+  }
+}

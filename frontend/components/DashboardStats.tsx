@@ -1,4 +1,4 @@
-import { FiZap, FiClock, FiFolderOpen, FiTrendingUp } from 'react-icons/fi';
+import { FiZap, FiClock, FiStar, FiTrendingUp } from 'react-icons/fi';
 
 export default function DashboardStats() {
   const stats = [
@@ -30,7 +30,7 @@ export default function DashboardStats() {
       label: 'Favorite Stations',
       value: '8',
       unit: 'bookmarked',
-      icon: FiFolderOpen,
+      icon: FiStar,
       color: 'bg-yellow-100 text-yellow-600',
       trend: '+2',
     },

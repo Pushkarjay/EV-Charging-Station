@@ -368,6 +368,81 @@ class EmailTemplates:
         text_body = f"Available Charging Stations\n\nHi {user_name},\n\nThere are charging stations available near your favorites today. Check them out at: https://evcharge.app/stations"
         
         return subject, html_body, text_body
+    
+    @staticmethod
+    def booking_cancellation(
+        user_name: str,
+        station_name: str,
+        booking_id: str,
+        refund_amount: float
+    ) -> tuple:
+        """Generate booking cancellation email"""
+        
+        subject = f"Booking Cancelled - Reference #{booking_id}"
+        
+        html_body = f"""
+        <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: #fee2e2; color: #991b1b; padding: 20px; text-align: center; border-radius: 5px; }}
+                    .content {{ background: #f8f9fa; padding: 20px; margin-top: 10px; border-radius: 5px; }}
+                    .detail {{ margin: 10px 0; }}
+                    .label {{ font-weight: bold; color: #0ea5e9; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Booking Cancelled</h1>
+                    </div>
+                    
+                    <div class="content">
+                        <p>Hi {user_name},</p>
+                        
+                        <p>Your booking has been successfully cancelled.</p>
+                        
+                        <div class="detail">
+                            <span class="label">Booking Reference:</span> {booking_id}
+                        </div>
+                        
+                        <div class="detail">
+                            <span class="label">Station:</span> {station_name}
+                        </div>
+                        
+                        <div class="detail">
+                            <span class="label">Refund Amount:</span> ${refund_amount:.2f}
+                        </div>
+                        
+                        <p style="margin-top: 20px; color: #666; font-size: 14px;">
+                            The refund will be processed to your original payment method within 1-2 business days.
+                        </p>
+                        
+                        <p>If you have any questions, please contact support@evcharge.app</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+        """
+        
+        text_body = f"""
+        Booking Cancelled - Reference #{booking_id}
+        
+        Hi {user_name},
+        
+        Your booking has been cancelled.
+        
+        Station: {station_name}
+        Reference: {booking_id}
+        Refund: ${refund_amount:.2f}
+        
+        Refund will be processed within 1-2 business days.
+        
+        Questions? Contact support@evcharge.app
+        """
+        
+        return subject, html_body, text_body
 
 
 class EmailNotificationService:
@@ -423,6 +498,18 @@ class EmailNotificationService:
     ) -> bool:
         """Send daily availability alert"""
         subject, html, text = EmailTemplates.daily_availability_alert(user_name, stations)
+        return await self.email_service.send_email(to, subject, html, text)
+    
+    async def send_booking_cancellation(
+        self,
+        to: str,
+        user_name: str,
+        station_name: str,
+        booking_id: str,
+        refund_amount: float
+    ) -> bool:
+        """Send booking cancellation email"""
+        subject, html, text = EmailTemplates.booking_cancellation(user_name, station_name, booking_id, refund_amount)
         return await self.email_service.send_email(to, subject, html, text)
 
 

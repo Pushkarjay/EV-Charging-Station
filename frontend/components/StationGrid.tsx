@@ -1,12 +1,24 @@
 import { useState, useEffect } from 'react';
 import StationCard from './StationCard';
 
+interface Station {
+  id: number;
+  name: string;
+  address: string;
+  distance: number;
+  chargers: number;
+  available: number;
+  rating: number;
+  price: number;
+  type: string;
+}
+
 interface StationGridProps {
   limit?: number;
 }
 
 export default function StationGrid({ limit }: StationGridProps) {
-  const [stations, setStations] = useState([]);
+  const [stations, setStations] = useState<Station[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
