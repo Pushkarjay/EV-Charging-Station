@@ -424,7 +424,7 @@ gsutil -m cp -r .next/static/* gs://gcs-ev-charging-frontend/_next/static/
 # Update environment
 # Create .env.production:
 NEXT_PUBLIC_API_URL=https://ev-backend-[HASH]-uc.a.run.app
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 ```
 
 ### Frontend Hosting Options
@@ -504,7 +504,7 @@ gcloud sql backups restore BACKUP_ID \
 |-----------|-----------|----------|
 | **GCP Project** | [gcs-ev-charging-station](https://console.cloud.google.com/welcome?project=gcs-ev-charging-station) | ✅ |
 | **Service Account** | gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com | ✅ |
-| **Maps API** | AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I | ✅ |
+| **Maps API** | YOUR_MAPS_API_KEY | ✅ (Set via environment) |
 | **Backend (Cloud Run)** | Deploy when ready | ⏳ |
 | **Frontend (Vercel/Cloud Run)** | Deploy when ready | ⏳ |
 | **Database (Cloud SQL)** | Create instance | ⏳ |

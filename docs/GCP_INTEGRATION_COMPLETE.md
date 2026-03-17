@@ -11,7 +11,7 @@
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| **API Key** | ✅ Active | `AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I` |
+| **API Key** | ✅ Active | Set via environment variable |
 | **Project ID** | ✅ Configured | `gcs-ev-charging-station` |
 | **Service Account** | ✅ Ready | `gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com` |
 | **Roles** | ✅ Assigned | Cloud Run Admin, Cloud SQL Client, Storage Admin |
@@ -47,7 +47,7 @@
 
 ### Google Maps API
 ```
-Primary Key: AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+Primary Key: Set via environment variable (GOOGLE_MAPS_API_KEY)
 Location: Both backend/.env and frontend/.env.local
 Uses: Geocoding, reverse geocoding, mapping, distance calculations
 ```

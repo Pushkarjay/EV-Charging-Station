@@ -221,7 +221,7 @@
 - [x] Required APIs enabled
 
 ### Google Maps Integration
-- [x] Maps API key: `AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I`
+- [x] Maps API key: Configured via environment variable (never hardcode)
 - [x] Geocoding (address → coordinates)
 - [x] Reverse geocoding (coordinates → address)
 - [x] Distance calculation (Haversine)

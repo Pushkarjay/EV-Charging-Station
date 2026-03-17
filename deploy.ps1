@@ -188,7 +188,7 @@ function Deploy-Backend {
         --add-cloudsql-instances "$PROJECT_ID`:$REGION`:$INSTANCE_NAME" `
         --set-env-vars `
             "DATABASE_URL=mysql+pymysql://ev_user:EV_Charging_Station_2026!@localhost/ev_charging,`
-            GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I,`
+            GOOGLE_MAPS_API_KEY=$env:GOOGLE_MAPS_API_KEY,`
             GOOGLE_PROJECT_ID=$PROJECT_ID,`
             JWT_SECRET_KEY=your-secret-key-change-in-production-now" `
         --quiet 2>&1 | Out-Null

@@ -3,7 +3,7 @@
 ## ✅ What You Have Provided
 
 ### Google Cloud Setup
-- ✅ **Google Maps API Key**: `AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I`
+- ✅ **Google Maps API Key**: Configured via environment variable
 - ✅ **GCP Project ID**: `gcs-ev-charging-station`
 - ✅ **Service Account**: `gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com`
 - ✅ **Service Account Roles**: Cloud Run Admin, Cloud SQL Client, Storage Admin
@@ -57,7 +57,7 @@ GCP_SERVICE_ACCOUNT=gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com
 
 ### Frontend (.env.local)
 ```
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 

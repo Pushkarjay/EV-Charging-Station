@@ -206,7 +206,7 @@ Created **complete automated deployment infrastructure**:
 ## 🔐 CREDENTIALS & CONFIGURATION
 
 ### Already Configured ✅
-- Google Maps API Key: `AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I`
+- Google Maps API Key: Set via environment variable (setup script handles this)
 - GCP Project ID: `gcs-ev-charging-station`
 - Service Account: `gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com`
 - Service Key: `credentials/keys/gcp-service-key.json`

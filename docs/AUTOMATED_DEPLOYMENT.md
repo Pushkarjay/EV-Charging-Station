@@ -12,7 +12,7 @@
 ### Phase 0: Prerequisites ✅ COMPLETED
 - [x] GCP Project created: `gcs-ev-charging-station`
 - [x] Service Account created: `gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com`
-- [x] Google Maps API Key: `AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I` (Active)
+- [x] Google Maps API Key: Set via `$env:GOOGLE_MAPS_API_KEY` (Never hardcode)
 - [x] Service account key downloaded: `credentials/keys/gcp-service-key.json`
 - [x] Both gcloud accounts authenticated
 - [x] Project set as default: `gcs-ev-charging-station`
@@ -287,7 +287,7 @@ CORS_ORIGINS=["http://localhost:3000","https://yourdomain.com"]
 ### Frontend (.env.local)
 ```
 NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 ```
 
 ### Cloud Deployment (.env.production)

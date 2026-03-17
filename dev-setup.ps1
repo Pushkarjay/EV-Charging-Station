@@ -106,8 +106,8 @@ function Setup-Backend {
 # Database
 DATABASE_URL=sqlite:///./ev_charging.db
 
-# Google Maps API
-GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+# Google Maps API (Set in environment, never hardcode)
+GOOGLE_MAPS_API_KEY=$env:GOOGLE_MAPS_API_KEY
 GOOGLE_PROJECT_ID=gcs-ev-charging-station
 GCP_SERVICE_ACCOUNT=gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com
 
@@ -152,8 +152,8 @@ function Setup-Frontend {
 # Backend API
 NEXT_PUBLIC_API_URL=http://localhost:8000
 
-# Google Maps API
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+# Google Maps API (Set in environment, never hardcode)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$env:GOOGLE_MAPS_API_KEY
 
 # Environment
 NEXT_PUBLIC_ENV=development

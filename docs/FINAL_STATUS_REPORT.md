@@ -113,7 +113,7 @@ ML Models:
 ```
 ✅ Project: gcs-ev-charging-station
 ✅ Service Account: gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com
-✅ Google Maps API: AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+✅ Google Maps API: Configured via environment variable
 
 Services (Ready to Deploy):
 ├── Cloud SQL (MySQL Database)
@@ -263,7 +263,7 @@ gcloud sql instances patch ev-charging-db \
 
 ### Files Already Configured ✅
 - **GCP Service Account**: `credentials/keys/gcp-service-key.json`
-- **Google Maps API Key**: `AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I`
+- **Google Maps API Key**: Set via environment variable (never expose in code/docs)
 - **Backend Config**: `backend/.env` (with GCP settings)
 - **Frontend Config**: `frontend/.env.local` (with API key)
 
@@ -422,7 +422,7 @@ SMTP_PASSWORD=your-app-password
 **Frontend (.env.local)**:
 ```
 NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 ```
 
 ---
