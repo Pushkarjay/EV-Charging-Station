@@ -138,19 +138,21 @@ fi
 |---|---|---|---|---|
 | v1 (Original) | AIzaSyBJng... | ❌ **DELETED** | Docs (history) | Exposed first |
 | v2 | AIzaSyDsjv... | ❌ **DELETED** | Docs (history) | Exposed in fixes |
-| **v3 (Current)** | AIzaSyC6ur... | ✅ **ACTIVE** | **Env vars only** | Never hardcoded |
+| **v4 (Current)** | (See GCP Console) | ✅ **ACTIVE** | **Env vars only** | Never hardcoded |
 
-### How to Use Current Key (v3)
+### How to Use Current Key (Get from GCP Console)
 
 **For Local Development:**
 ```powershell
-$env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
+# Get key from: https://console.cloud.google.com/apis/credentials/keys
+$env:GOOGLE_MAPS_API_KEY = "YOUR_KEY_FROM_GCP_CONSOLE"
 ```
 
 **For Cloud Deployment:**
 ```bash
+# Get key from GCP Console Credentials page
 gcloud run deploy ev-backend \
-  --set-env-vars GOOGLE_MAPS_API_KEY=AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU
+  --set-env-vars GOOGLE_MAPS_API_KEY=YOUR_KEY_FROM_GCP_CONSOLE
 ```
 
 **In Docker Containers:**

@@ -10,12 +10,11 @@
 
 ### Step 1: 🔑 Set API Key (Environment Variable)
 ```powershell
-# PowerShell - Set the Google Maps API key
-$env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
+# PowerShell - Set the Google Maps API key (get from GCP Console)
+$env:GOOGLE_MAPS_API_KEY = "YOUR_MAPS_API_KEY_HERE"
 
 # Verify it's set
 echo $env:GOOGLE_MAPS_API_KEY
-# Output: AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU
 ```
 
 ### Step 2: ⚙️ Enable APIs & Link Billing
@@ -57,8 +56,8 @@ Database: Cloud SQL MySQL (ev-charging-db)
 
 ### Setup
 ```powershell
-# Set API key first
-$env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
+# Set API key first (get from GCP Console)
+$env:GOOGLE_MAPS_API_KEY = "YOUR_MAPS_API_KEY_HERE"
 
 # Run setup script
 .\dev-setup.ps1 -Action setup
@@ -66,7 +65,7 @@ $env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
 
 ### Start Both Servers
 ```powershell
-# Terminal 1: Backend
+# Terminal 1: Backend (after setting $env:GOOGLE_MAPS_API_KEY)
 .\dev-setup.ps1 -Action start -Component backend
 # Runs on http://localhost:8000
 
@@ -87,7 +86,7 @@ $env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
 ### ✅ DO
 ```powershell
 # ✅ CORRECT - Use environment variables
-$env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
+$env:GOOGLE_MAPS_API_KEY = "YOUR_MAPS_API_KEY_HERE"
 
 # ✅ CORRECT - Reference in scripts as env vars
 --set-env-vars GOOGLE_MAPS_API_KEY=$env:GOOGLE_MAPS_API_KEY
@@ -96,13 +95,13 @@ $env:GOOGLE_MAPS_API_KEY = "AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU"
 ### ❌ DON'T
 ```powershell
 # ❌ WRONG - Never hardcode in scripts
-GOOGLE_MAPS_API_KEY=AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU
+GOOGLE_MAPS_API_KEY=AIzaSy...  # NEVER HARDCODE!
 
 # ❌ WRONG - Never commit .env files
 git add .env  # NEVER!
 
 # ❌ WRONG - Never put in documentation
-# See: https://github.com/.../blob/main/setup.md (with key visible)
+# See: https://github.com/.../blob/main/setup.md (secrets visible)
 ```
 
 ### 🛡️ ALWAYS
@@ -282,19 +281,22 @@ You know deployment succeeded when:
 
 ## 🔑 Important: Saving Your API Key Safely
 
-The current API key `AIzaSyC6urSj87lB7DqNpUq-O_sWZPnA7MLZomU` is ONLY for this deployment.
+Your Maps API key should ONLY be set via environment variable.
 
 **For production**: 
-- Restrict key to only Maps API
-- Set trusted domains
+- Get key from GCP Console (Credentials > API Keys)
+- Never share it in any form
+- Restrict key to only Maps API via GCP Console
+- Set trusted domains in GCP Console
 - Monitor usage monthly
 - Rotate every 90 days
 
 **Never**:
 - Share it in Slack, email, or chat
 - Commit it to any repository
-- Push it to GitHub
-- Include it in documentation
+- Push it to GitHub (even if you think you're careful)
+- Include it in documentation or guides
+- Hardcode it in any file
 
 ---
 
