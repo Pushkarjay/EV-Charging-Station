@@ -56,6 +56,23 @@ class Settings(BaseSettings):
     # Google Maps (Optional)
     GOOGLE_MAPS_API_KEY: str = os.getenv("GOOGLE_MAPS_API_KEY", "")
     
+    # Google Cloud Platform (GCP)
+    GOOGLE_PROJECT_ID: str = os.getenv("GOOGLE_PROJECT_ID", "")
+    GOOGLE_CREDENTIALS_PATH: str = os.getenv("GOOGLE_CREDENTIALS_PATH", "./credentials/keys/gcp-service-key.json")
+    GCP_SERVICE_ACCOUNT: str = os.getenv("GCP_SERVICE_ACCOUNT", "")
+    GCP_REGION: str = os.getenv("GCP_REGION", "us-central1")
+    GCP_BUCKET_NAME: str = os.getenv("GCP_BUCKET_NAME", "")
+    
+    # Map Configuration
+    DEFAULT_MAP_CENTER_LAT: float = float(os.getenv("DEFAULT_MAP_CENTER_LAT", "28.5355"))
+    DEFAULT_MAP_CENTER_LNG: float = float(os.getenv("DEFAULT_MAP_CENTER_LNG", "77.3910"))
+    DEFAULT_MAP_ZOOM: int = int(os.getenv("DEFAULT_MAP_ZOOM", "12"))
+    MAP_SEARCH_RADIUS_KM: float = float(os.getenv("MAP_SEARCH_RADIUS_KM", "50"))
+    
+    # Redis (Optional)
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    CACHE_ENABLED: bool = os.getenv("CACHE_ENABLED", "true").lower() == "true"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
