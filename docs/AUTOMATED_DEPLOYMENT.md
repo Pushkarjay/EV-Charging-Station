@@ -148,7 +148,7 @@ gcloud run deploy ev-backend `
   --add-cloudsql-instances $PROJECT_ID`:$REGION`:ev-charging-db `
   --set-env-vars `
     DATABASE_URL=`"mysql+pymysql://ev_user:EV_Charging_2026!@localhost/ev_charging`",`
-    GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I,`
+    GOOGLE_MAPS_API_KEY=$env:GOOGLE_MAPS_API_KEY,`
     GOOGLE_PROJECT_ID=$PROJECT_ID,`
     JWT_SECRET_KEY=your-secret-key-change-me `
   --quiet
@@ -275,7 +275,7 @@ npm run dev  # Runs on http://localhost:3000
 ### Backend (.env)
 ```
 DATABASE_URL=sqlite:///./ev_charging.db
-GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 GOOGLE_PROJECT_ID=gcs-ev-charging-station
 GCP_SERVICE_ACCOUNT=gcs-sa-1@gcs-ev-charging-station.iam.gserviceaccount.com
 JWT_SECRET_KEY=your-secret-key-change-in-production
@@ -293,7 +293,7 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 ### Cloud Deployment (.env.production)
 ```
 DATABASE_URL=mysql+pymysql://ev_user:PASSWORD@cloudsql-proxy-host/ev_charging
-GOOGLE_MAPS_API_KEY=AIzaSyBJngkZpWIPcixEt6UfOTG-wUE4bwSg48I
+GOOGLE_MAPS_API_KEY=$env:GOOGLE_MAPS_API_KEY
 GOOGLE_PROJECT_ID=gcs-ev-charging-station
 JWT_SECRET_KEY=PROD_SECRET_KEY_STRONG_32_CHARS
 SMTP_USER=your-email@gmail.com

@@ -109,7 +109,7 @@ App Password: xxxx xxxx xxxx xxxx (copy without spaces)
 
 1. Left sidebar → **Credentials**
 2. Click **+ CREATE CREDENTIALS** → **API Key**
-3. A popup shows your API key (looks like `AIzaSyD...`)
+3. A popup shows your API key (save it securely, never commit to Git)
 4. Click **COPY**
 5. Click **CLOSE**
 
@@ -142,7 +142,7 @@ STRIPE_PUBLISHABLE_KEY=pk_test_abcdefg...
 SMTP_USERNAME=your-email@gmail.com
 SMTP_PASSWORD=xxxxxxxxxxxx
 
-GOOGLE_MAPS_API_KEY=AIzaSyD...
+GOOGLE_MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
 ```
 
 ---
