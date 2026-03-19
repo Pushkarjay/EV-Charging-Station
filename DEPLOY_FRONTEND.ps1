@@ -1,7 +1,8 @@
 #!/usr/bin/env pwsh
 # Quick Firebase + Cloud Run Deployment for EV Charging Station Frontend
+# NO DOCKER REQUIRED - Uses Google Cloud Build
 
-Write-Host "`n🚀 EV Charging Station - Quick Deployment`n" -ForegroundColor Cyan
+Write-Host "`n🚀 EV Charging Station - Quick Deployment (No Docker Needed)`n" -ForegroundColor Cyan
 
 # Configuration
 $PROJECT_ID = "gcs-ev-charging-station"
@@ -19,34 +20,16 @@ Write-Host "✓ Authenticated`n" -ForegroundColor Green
 
 # Step 2: Enable APIs
 Write-Host "Step 2: Enabling required GCP APIs..." -ForegroundColor Cyan
-gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com --quiet
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com --quiet
 Write-Host "✓ APIs enabled`n" -ForegroundColor Green
 
-# Step 3: Build and Push to Artifact Registry
-Write-Host "Step 3: Building Docker image..." -ForegroundColor Cyan
-$IMAGE_URL = "$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-repo/$SERVICE_NAME:latest"
+# Step 3: Deploy directly from source using Cloud Run
+Write-Host "Step 3: Deploying to Cloud Run (GCP will build the image)..." -ForegroundColor Cyan
+Write-Host "This will take 2-3 minutes...`n" -ForegroundColor Yellow
 
-# Configure Docker authentication
-gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
-
-# Build the image
-docker build -f Dockerfile.prod -t $IMAGE_URL .
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "✓ Docker image built`n" -ForegroundColor Green
-} else {
-    Write-Host "✗ Docker build failed. Trying alternative method...(using gcloud builds)" -ForegroundColor Red
-}
-
-# Step 4: Push to Artifact Registry
-Write-Host "Step 4: Pushing image to Artifact Registry..." -ForegroundColor Cyan
-docker push $IMAGE_URL
-Write-Host "✓ Image pushed`n" -ForegroundColor Green
-
-# Step 5: Deploy to Cloud Run
-Write-Host "Step 5: Deploying to Cloud Run..." -ForegroundColor Cyan
+# Deploy directly from frontend source - GCP handles the build
 gcloud run deploy $SERVICE_NAME `
-    --image=$IMAGE_URL `
+    --source=./frontend `
     --platform=managed `
     --region=$REGION `
     --allow-unauthenticated `
@@ -58,8 +41,8 @@ gcloud run deploy $SERVICE_NAME `
 
 Write-Host "✓ Deployed to Cloud Run!`n" -ForegroundColor Green
 
-# Step 6: Get Service URL
-Write-Host "Step 6: Getting service URL..." -ForegroundColor Cyan
+# Step 4: Get Service URL
+Write-Host "Step 4: Getting service URL..." -ForegroundColor Cyan
 $SERVICE_URL = gcloud run services describe $SERVICE_NAME --region=$REGION --format='value(status.url)'
 
 Write-Host "`n" + "="*60 -ForegroundColor Cyan
@@ -73,6 +56,7 @@ Write-Host "💾 Using your $500 GCP Hackathon Credit`n" -ForegroundColor Cyan
 # Additional info
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "  1. Visit the URL above to see your EV Charging Station app" -ForegroundColor White
-Write-Host "  2. Share the link in your GitHub README" -ForegroundColor White  
+Write-Host "  2. Share the link in your GitHub README" -ForegroundColor White
 Write-Host "  3. Deploy backend: Update NEXT_PUBLIC_API_URL to your backend URL" -ForegroundColor White
 Write-Host "  4. Add to GitHub: git add . && git commit -m 'add deployment' && git push`n" -ForegroundColor White
+

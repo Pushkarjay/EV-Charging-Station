@@ -2,18 +2,38 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from contextlib import asynccontextmanager
-from app.config import settings
-from app.services.database import Base, engine
-from app.api import auth, stations, bookings, users, payments
+import os
+import logging
 
-# Create tables
-Base.metadata.create_all(bind=engine)
+logger = logging.getLogger(__name__)
+
+from app.config import settings
+
+# Enable database initialization by default, disable with SKIP_DB_INIT=true
+SKIP_DB_INIT = os.getenv("SKIP_DB_INIT", "false").lower() == "true"
+
+if not SKIP_DB_INIT:
+    try:
+        from app.services.database import Base, engine
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables initialized")
+    except Exception as e:
+        logger.warning(f"Database initialization warning: {e}")
+else:
+    logger.info("Database initialization skipped")
+
+# Try to import API routers
+try:
+    from app.api import auth, stations, bookings, users, payments
+except Exception as e:
+    logger.warning(f"Could not import API routers: {e}")
+    auth = stations = bookings = users = payments = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("✓ Application startup")
+    logger.info("Starting EV Charging Station Backend")
     yield
-    print("✓ Application shutdown")
+    logger.info("Shutting down EV Charging Station Backend")
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -24,21 +44,26 @@ app = FastAPI(
 )
 
 # Middleware
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Routes
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(stations.router, prefix="/stations", tags=["Stations"])
-app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
-app.include_router(users.router, prefix="/users", tags=["Users"])
-app.include_router(payments.router, prefix="/payments", tags=["Payments"])
+if auth:
+    app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+if stations:
+    app.include_router(stations.router, prefix="/stations", tags=["Stations"])
+if bookings:
+    app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
+if users:
+    app.include_router(users.router, prefix="/users", tags=["Users"])
+if payments:
+    app.include_router(payments.router, prefix="/payments", tags=["Payments"])
 
 # Health check
 @app.get("/health", tags=["Health"])

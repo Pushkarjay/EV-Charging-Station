@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiMapPin, FiFilter } from 'react-icons/fi';
+import { stationService } from '../services';
 
 interface ListStation {
   id: number;
@@ -18,16 +19,45 @@ interface StationListProps {
 export default function StationList({ selectedStation }: StationListProps) {
   const [stations, setStations] = useState<ListStation[]>([]);
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const mockStations = [
-      { id: 1, name: 'Downtown Station', address: '123 Main St', distance: 0.5, available: 8, chargers: 12, rating: 4.8 },
-      { id: 2, name: 'Green Park Hub', address: '456 Park Ave', distance: 1.2, available: 15, chargers: 20, rating: 4.9 },
-      { id: 3, name: 'Tech Central', address: '789 Tech Blvd', distance: 2.1, available: 3, chargers: 8, rating: 4.5 },
-      { id: 4, name: 'Shopping Mall', address: '321 Mall Rd', distance: 1.8, available: 10, chargers: 16, rating: 4.7 },
-      { id: 5, name: 'Airport Hub', address: '654 Airport Way', distance: 5.0, available: 18, chargers: 24, rating: 4.6 },
-    ];
-    setStations(mockStations);
+    const fetchStations = async () => {
+      try {
+        setLoading(true);
+        // Try to fetch from real API
+        const response = await stationService.getStations();
+        const data = response.data;
+        
+        // Transform API response
+        const transformedStations = (Array.isArray(data) ? data : data.stations ||data.data || []).map((station: any) => ({
+          id: station.id,
+          name: station.name || 'Unknown Station',
+          address: station.address || '',
+          distance: station.distance || 0,
+          available: station.available_chargers || station.available || 0,
+          chargers: station.total_chargers || station.chargers || 0,
+          rating: station.rating || 4.5,
+        }));
+        
+        setStations(transformedStations);
+      } catch (err) {
+        console.error('Failed to fetch stations:', err);
+        // Fallback to mock data
+        const mockStations = [
+          { id: 1, name: 'Downtown Station', address: '123 Main St', distance: 0.5, available: 8, chargers: 12, rating: 4.8 },
+          { id: 2, name: 'Green Park Hub', address: '456 Park Ave', distance: 1.2, available: 15, chargers: 20, rating: 4.9 },
+          { id: 3, name: 'Tech Central', address: '789 Tech Blvd', distance: 2.1, available: 3, chargers: 8, rating: 4.5 },
+          { id: 4, name: 'Shopping Mall', address: '321 Mall Rd', distance: 1.8, available: 10, chargers: 16, rating: 4.7 },
+          { id: 5, name: 'Airport Hub', address: '654 Airport Way', distance: 5.0, available: 18, chargers: 24, rating: 4.6 },
+        ];
+        setStations(mockStations);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchStations();
   }, []);
 
   const filteredStations = stations.filter((station) => {

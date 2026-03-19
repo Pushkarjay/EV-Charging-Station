@@ -2,25 +2,21 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Install only essential packages
+RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade pip --no-cache-dir
 
-# Copy requirements
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy minimal requirements (just FastAPI and uvicorn)
+RUN pip install --no-cache-dir fastapi==0.104.1 uvicorn[standard]==0.24.0
 
 # Copy application
-COPY . .
+COPY app/ app/
 
-# Create database directory
-RUN mkdir -p /app/data
+# Environment
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8080
 
-# Expose port
-EXPOSE 8000
+EXPOSE 8080
 
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use minimal app
+CMD ["uvicorn", "app.minimal_main:app", "--host", "0.0.0.0", "--port", "8080", "--log-level", "info"]

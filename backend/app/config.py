@@ -1,8 +1,10 @@
 from pydantic_settings import BaseSettings
+from pydantic import Field
 from typing import List
 import os
 
 class Settings(BaseSettings):
+    model_config = {"case_sensitive": False}
     # App
     APP_NAME: str = "EV Charging Station API"
     DEBUG: bool = os.getenv("DEBUG", "True") == "True"
@@ -28,20 +30,29 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     
     # CORS
-    ALLOWED_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://localhost:8000",
-        "http://localhost",
-        "http://127.0.0.1:3000",
-    ]
+    allowed_origins: List[str] = Field(
+        default=[
+            "http://localhost:3000",
+            "http://localhost:8000",
+            "http://localhost",
+            "http://127.0.0.1:3000",
+            "https://ev-charging-frontend-329478150613.us-central1.run.app",
+            "https://ev-charging-frontend-s4upxdiilq-uc.a.run.app",
+        ],
+        alias="ALLOWED_ORIGINS"
+    )
     
     # Trusted Hosts
-    ALLOWED_HOSTS: List[str] = [
-        "localhost",
-        "127.0.0.1",
-        "localhost:3000",
-        "localhost:8000",
-    ]
+    allowed_hosts: List[str] = Field(
+        default=[
+            "localhost",
+            "127.0.0.1",
+            "localhost:3000",
+            "localhost:8000",
+            "run.app",
+        ],
+        alias="ALLOWED_HOSTS"
+    )
     
     # Email (Optional)
     SMTP_SERVER: str = os.getenv("SMTP_SERVER", "smtp.gmail.com")
@@ -72,9 +83,5 @@ class Settings(BaseSettings):
     # Redis (Optional)
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     CACHE_ENABLED: bool = os.getenv("CACHE_ENABLED", "true").lower() == "true"
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
 
 settings = Settings()
