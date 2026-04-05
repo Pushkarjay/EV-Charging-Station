@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List
 from app.schemas import (
@@ -6,11 +6,15 @@ from app.schemas import (
 )
 from app.models import User, Favorite, Station
 from app.services.database import get_db
+from pydantic import BaseModel
+
+class FavoriteRequest(BaseModel):
+    station_id: int
 
 router = APIRouter()
 
 @router.get("/profile", response_model=UserResponse)
-async def get_profile(user_id: int, db: Session = Depends(get_db)):
+async def get_profile(user_id: int = 1, db: Session = Depends(get_db)):
     """Get user profile"""
     user = db.query(User).filter(User.id == user_id).first()
     
@@ -24,8 +28,8 @@ async def get_profile(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/profile", response_model=UserResponse)
 async def update_profile(
-    user_id: int,
     profile_update: UserUpdate,
+    user_id: int = 1,
     db: Session = Depends(get_db)
 ):
     """Update user profile"""
@@ -47,7 +51,7 @@ async def update_profile(
     return UserResponse.from_orm(user)
 
 @router.get("/preferences")
-async def get_preferences(user_id: int, db: Session = Depends(get_db)):
+async def get_preferences(user_id: int = 1, db: Session = Depends(get_db)):
     """Get user preferences"""
     user = db.query(User).filter(User.id == user_id).first()
     
@@ -67,8 +71,8 @@ async def get_preferences(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/preferences")
 async def update_preferences(
-    user_id: int,
     preferences: dict,
+    user_id: int = 1,
     db: Session = Depends(get_db)
 ):
     """Update user preferences"""
@@ -86,7 +90,7 @@ async def update_preferences(
     }
 
 @router.get("/favorites")
-async def get_favorite_stations(user_id: int, db: Session = Depends(get_db)):
+async def get_favorite_stations(user_id: int = 1, db: Session = Depends(get_db)):
     """Get user's favorite stations"""
     favorites = db.query(Favorite).filter(Favorite.user_id == user_id).all()
     station_ids = [f.station_id for f in favorites]
@@ -97,8 +101,8 @@ async def get_favorite_stations(user_id: int, db: Session = Depends(get_db)):
 
 @router.post("/favorites")
 async def add_favorite_station(
-    user_id: int,
-    station_id: int,
+    favorite_request: FavoriteRequest,
+    user_id: int = Query(1),
     db: Session = Depends(get_db)
 ):
     """Add station to favorites"""
@@ -109,7 +113,7 @@ async def add_favorite_station(
             detail="User not found"
         )
     
-    station = db.query(Station).filter(Station.id == station_id).first()
+    station = db.query(Station).filter(Station.id == favorite_request.station_id).first()
     if not station:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -119,7 +123,7 @@ async def add_favorite_station(
     # Check if already favorited
     existing = db.query(Favorite).filter(
         Favorite.user_id == user_id,
-        Favorite.station_id == station_id
+        Favorite.station_id == favorite_request.station_id
     ).first()
     
     if existing:
@@ -128,7 +132,7 @@ async def add_favorite_station(
             detail="Station already in favorites"
         )
     
-    favorite = Favorite(user_id=user_id, station_id=station_id)
+    favorite = Favorite(user_id=user_id, station_id=favorite_request.station_id)
     db.add(favorite)
     db.commit()
     
@@ -136,8 +140,8 @@ async def add_favorite_station(
 
 @router.delete("/favorites/{station_id}")
 async def remove_favorite_station(
-    user_id: int,
     station_id: int,
+    user_id: int = 1,
     db: Session = Depends(get_db)
 ):
     """Remove station from favorites"""

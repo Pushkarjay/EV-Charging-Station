@@ -5,6 +5,7 @@ import PricingComparison from '@components/PricingComparison';
 
 export default function Pricing() {
   const [billingCycle, setBillingCycle] = useState('monthly');
+  const [selectedPlan, setSelectedPlan] = useState(2); // Pro is selected by default
 
   const plans = [
     {
@@ -94,7 +95,12 @@ export default function Pricing() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {plans.map((plan) => (
-            <PricingCard key={plan.id} plan={plan} />
+            <PricingCard 
+              key={plan.id} 
+              plan={plan} 
+              isSelected={selectedPlan === plan.id}
+              onSelect={() => setSelectedPlan(plan.id)}
+            />
           ))}
         </div>
 

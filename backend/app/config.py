@@ -33,23 +33,23 @@ class Settings(BaseSettings):
     allowed_origins: List[str] = Field(
         default=[
             "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3002",
             "http://localhost:8000",
             "http://localhost",
             "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001",
+            "http://127.0.0.1:3002",
             "https://ev-charging-frontend-329478150613.us-central1.run.app",
             "https://ev-charging-frontend-s4upxdiilq-uc.a.run.app",
         ],
         alias="ALLOWED_ORIGINS"
     )
     
-    # Trusted Hosts
+    # Trusted Hosts - More permissive for development
     allowed_hosts: List[str] = Field(
         default=[
-            "localhost",
-            "127.0.0.1",
-            "localhost:3000",
-            "localhost:8000",
-            "run.app",
+            "*",  # Allow all hosts in development - use proper values in production
         ],
         alias="ALLOWED_HOSTS"
     )
@@ -74,11 +74,11 @@ class Settings(BaseSettings):
     GCP_REGION: str = os.getenv("GCP_REGION", "us-central1")
     GCP_BUCKET_NAME: str = os.getenv("GCP_BUCKET_NAME", "")
     
-    # Map Configuration
-    DEFAULT_MAP_CENTER_LAT: float = float(os.getenv("DEFAULT_MAP_CENTER_LAT", "28.5355"))
-    DEFAULT_MAP_CENTER_LNG: float = float(os.getenv("DEFAULT_MAP_CENTER_LNG", "77.3910"))
+    # Map Configuration - Bhubaneswar, India as default
+    DEFAULT_MAP_CENTER_LAT: float = float(os.getenv("DEFAULT_MAP_CENTER_LAT", "20.2961"))
+    DEFAULT_MAP_CENTER_LNG: float = float(os.getenv("DEFAULT_MAP_CENTER_LNG", "85.8245"))
     DEFAULT_MAP_ZOOM: int = int(os.getenv("DEFAULT_MAP_ZOOM", "12"))
-    MAP_SEARCH_RADIUS_KM: float = float(os.getenv("MAP_SEARCH_RADIUS_KM", "50"))
+    MAP_SEARCH_RADIUS_KM: float = float(os.getenv("MAP_SEARCH_RADIUS_KM", "15"))
     
     # Redis (Optional)
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")

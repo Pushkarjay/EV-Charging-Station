@@ -10,16 +10,25 @@ interface ListStation {
   available: number;
   chargers: number;
   rating: number;
+  [key: string]: any;
 }
 
 interface StationListProps {
   selectedStation?: ListStation | null;
+  filter?: string;
+  searchQuery?: string;
+  onStationSelect?: (station: ListStation) => void;
 }
 
-export default function StationList({ selectedStation }: StationListProps) {
+export default function StationList({ selectedStation, filter = 'all', searchQuery = '', onStationSelect }: StationListProps) {
   const [stations, setStations] = useState<ListStation[]>([]);
-  const [filter, setFilter] = useState('all');
+  const [localFilter, setLocalFilter] = useState(filter);
   const [loading, setLoading] = useState(true);
+
+  // Update local filter when prop changes
+  useEffect(() => {
+    setLocalFilter(filter);
+  }, [filter]);
 
   useEffect(() => {
     const fetchStations = async () => {
@@ -61,65 +70,74 @@ export default function StationList({ selectedStation }: StationListProps) {
   }, []);
 
   const filteredStations = stations.filter((station) => {
-    if (filter === 'available') return station.available > 0;
-    if (filter === 'nearby') return station.distance < 2;
-    if (filter === 'rated') return station.rating >= 4.7;
+    // Apply search filter
+    if (searchQuery && !station.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
+        !station.address.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
+    // Apply status filter
+    if (localFilter === 'available') return station.available > 0;
+    if (localFilter === 'nearby') return station.distance < 2;
+    if (localFilter === 'rated') return station.rating >= 4.7;
     return true;
   });
 
   return (
-    <div className="card h-full max-h-96 overflow-y-auto scrollbar-hide">
+    <div className="card h-full">
       {/* Header */}
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-accent-900 mb-4">Nearby Stations</h3>
-
-        {/* Filter */}
-        <div className="flex gap-2 mb-4 flex-wrap">
-          {['all', 'available', 'nearby', 'rated'].map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`btn btn-small ${
-                filter === f
-                  ? 'btn-primary'
-                  : 'btn-outline'
-              }`}
-            >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          ))}
-        </div>
+        <h3 className="text-lg font-bold text-accent-900 mb-2">
+          📋 Stations List
+        </h3>
+        {searchQuery && (
+          <p className="text-sm text-accent-600 mb-2">
+            Searching for: <span className="font-semibold">{searchQuery}</span>
+          </p>
+        )}
+        <p className="text-sm text-accent-600">
+          Found {filteredStations.length} station{filteredStations.length !== 1 ? 's' : ''}
+        </p>
       </div>
 
       {/* Stations List */}
-      <div className="space-y-4">
-        {filteredStations.map((station) => (
-          <div
-            key={station.id}
-            className={`p-4 rounded-lg border-2 transition cursor-pointer ${
-              selectedStation?.id === station.id
-                ? 'border-primary-500 bg-primary-50'
-                : 'border-accent-200 hover:border-primary-300'
-            }`}
-          >
-            <div className="flex items-start justify-between mb-2">
-              <h4 className="font-semibold text-accent-900">{station.name}</h4>
-              <span className="badge badge-secondary text-xs">{station.rating}★</span>
-            </div>
-            <p className="text-sm text-accent-600 flex items-center gap-1 mb-3">
-              <FiMapPin size={14} />
-              {station.address} • {station.distance} km
-            </p>
-            <div className="flex justify-between items-center text-sm">
-              <p className="font-semibold text-accent-700">
-                {station.available}/{station.chargers} Available
+      <div className="space-y-3 max-h-96 overflow-y-auto">
+        {filteredStations.length > 0 ? (
+          filteredStations.map((station) => (
+            <div
+              key={station.id}
+              onClick={() => onStationSelect?.(station)}
+              className={`p-4 rounded-lg border-2 transition cursor-pointer ${
+                selectedStation?.id === station.id
+                  ? 'border-primary-500 bg-primary-50'
+                  : 'border-accent-200 hover:border-primary-300 hover:bg-accent-50'
+              }`}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold text-accent-900">{station.name}</h4>
+                <span className="badge badge-secondary text-xs">{station.rating}★</span>
+              </div>
+              <p className="text-sm text-accent-600 flex items-center gap-1 mb-3">
+                <FiMapPin size={14} />
+                {station.address} • {station.distance} km
               </p>
-              <button className="btn btn-primary btn-small">
-                Book
-              </button>
+              <div className="flex justify-between items-center text-sm">
+                <p className="font-semibold text-accent-700">
+                  {station.available}/{station.chargers} Available
+                </p>
+                <button 
+                  className="btn btn-primary btn-small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onStationSelect?.(station);
+                  }}
+                >
+                  View
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : null}
       </div>
 
       {filteredStations.length === 0 && (

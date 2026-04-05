@@ -19,6 +19,7 @@ interface MapStation {
 
 interface StationMapProps {
   onStationSelect?: (station: any) => void;
+  center?: { lat: number; lng: number };
 }
 
 // Marker component for individual stations
@@ -37,12 +38,12 @@ const Marker = ({ name, available, chargers }: any) => {
   );
 };
 
-export default function StationMap({ onStationSelect }: StationMapProps) {
+export default function StationMap({ onStationSelect, center }: StationMapProps) {
   const mapRef = useRef<any>(null);
   const [stations, setStations] = useState<MapStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStation, setSelectedStation] = useState<MapStation | null>(null);
-  const [mapCenter, setMapCenter] = useState({ lat: 40.7128, lng: -74.0060 }); // NYC default
+  const [mapCenter, setMapCenter] = useState({ lat: 20.2961, lng: 85.8245 }); // Bhubaneswar, India
 
   useEffect(() => {
     const fetchStations = async () => {
@@ -85,6 +86,13 @@ export default function StationMap({ onStationSelect }: StationMapProps) {
 
     fetchStations();
   }, []);
+
+  // Update map center when center prop changes
+  useEffect(() => {
+    if (center) {
+      setMapCenter(center);
+    }
+  }, [center]);
 
   const getMockStations = (): MapStation[] => {
     return [

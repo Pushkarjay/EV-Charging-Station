@@ -2,9 +2,20 @@ import Head from 'next/head';
 import StationMap from '@components/StationMap';
 import { useState } from 'react';
 import StationList from '@components/StationList';
+import StationSearchControls from '@components/StationSearchControls';
+import StationDetail from '@components/StationDetail';
 
 export default function Stations() {
   const [selectedStation, setSelectedStation] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mapCenter, setMapCenter] = useState({ lat: 20.2961, lng: 85.8245 });
+  const [detailMode, setDetailMode] = useState(false);
+
+  const handleStationSelect = (station: any) => {
+    setSelectedStation(station);
+    setDetailMode(true);
+  };
 
   return (
     <>
@@ -21,12 +32,28 @@ export default function Stations() {
           </p>
         </div>
 
+        {/* Search and Filter Controls */}
+        <StationSearchControls
+          onFilterChange={setActiveFilter}
+          onSearchChange={setSearchQuery}
+          onLocationChange={(lat, lng) => setMapCenter({ lat, lng })}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <StationMap onStationSelect={setSelectedStation} />
+            <StationMap onStationSelect={handleStationSelect} center={mapCenter} />
           </div>
           <div className="lg:col-span-1">
-            <StationList selectedStation={selectedStation} />
+            {detailMode && selectedStation ? (
+              <StationDetail station={selectedStation} onClose={() => setDetailMode(false)} />
+            ) : (
+              <StationList 
+                selectedStation={selectedStation} 
+                filter={activeFilter} 
+                searchQuery={searchQuery}
+                onStationSelect={handleStationSelect}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -1,3 +1,5 @@
+'use client';
+
 import Head from 'next/head';
 import DashboardStats from '@components/DashboardStats';
 import RecentBookings from '@components/RecentBookings';

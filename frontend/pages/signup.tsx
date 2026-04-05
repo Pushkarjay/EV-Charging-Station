@@ -1,10 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiUser, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
+import { useRouter } from 'next/router';
+import { FiUser, FiMail, FiLock, FiArrowRight, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
 import { MdElectricBolt } from 'react-icons/md';
+import { authService } from '../services';
 
 export default function Signup() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,19 +15,77 @@ export default function Signup() {
     confirmPassword: '',
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState(false);
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) errors.name = 'Name is required';
+    if (!formData.email.trim()) errors.email = 'Email is required';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email format';
+    if (!formData.password) errors.password = 'Password is required';
+    if (formData.password.length < 8) errors.password = 'Password must be at least 8 characters';
+    if (!/(?=.*[a-z])/.test(formData.password)) errors.password = 'Password must contain lowercase letters';
+    if (!/(?=.*[A-Z])/.test(formData.password)) errors.password = 'Password must contain uppercase letters';
+    if (!/(?=.*\d)/.test(formData.password)) errors.password = 'Password must contain numbers';
+    if (!formData.confirmPassword) errors.confirmPassword = 'Confirm password is required';
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    // Clear error for this field when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors({
+        ...validationErrors,
+        [name]: '',
+      });
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    
+    if (!validateForm()) return;
+    
     setLoading(true);
-    // Handle signup logic here
-    setTimeout(() => setLoading(false), 1000);
+    try {
+      const response = await authService.signup(
+        formData.email,
+        formData.password,
+        formData.name
+      );
+      
+      if (response.data) {
+        const { access_token, user } = response.data;
+        setSuccess(true);
+        // Store token and user data
+        localStorage.setItem('token', access_token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
+      }
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.detail || err.message || 'Signup failed. Please try again.';
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,6 +111,20 @@ export default function Signup() {
               Create an account in less than 2 minutes
             </p>
 
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex gap-3 text-red-800">
+                <FiAlertCircle className="flex-shrink-0 w-5 h-5 mt-0.5" />
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex gap-3 text-green-800">
+                <FiCheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5" />
+                <p className="text-sm">Account created successfully! Redirecting...</p>
+              </div>
+            )}
+
             <form onSubmit={handleSignup} className="space-y-5">
               <div>
                 <label className="label flex items-center gap-2">
@@ -62,9 +137,10 @@ export default function Signup() {
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={handleChange}
-                  className="input"
+                  className={`input ${validationErrors.name ? 'border-red-500' : ''}`}
                   required
                 />
+                {validationErrors.name && <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>}
               </div>
 
               <div>
@@ -78,9 +154,10 @@ export default function Signup() {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="input"
+                  className={`input ${validationErrors.email ? 'border-red-500' : ''}`}
                   required
                 />
+                {validationErrors.email && <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>}
               </div>
 
               <div>
@@ -94,9 +171,11 @@ export default function Signup() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="input"
+                  className={`input ${validationErrors.password ? 'border-red-500' : ''}`}
                   required
                 />
+                {validationErrors.password && <p className="text-red-500 text-sm mt-1">{validationErrors.password}</p>}
+                <p className="text-xs text-accent-500 mt-2">Min 8 chars, uppercase, lowercase, and numbers</p>
               </div>
 
               <div>
@@ -110,9 +189,10 @@ export default function Signup() {
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="input"
+                  className={`input ${validationErrors.confirmPassword ? 'border-red-500' : ''}`}
                   required
                 />
+                {validationErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{validationErrors.confirmPassword}</p>}
               </div>
 
               <label className="flex items-start gap-3 cursor-pointer">
@@ -131,11 +211,11 @@ export default function Signup() {
 
               <button
                 type="submit"
-                disabled={loading}
-                className="btn btn-primary w-full flex items-center justify-center gap-2"
+                disabled={loading || success}
+                className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
-                <FiArrowRight />
+                {loading ? 'Creating Account...' : success ? 'Account Created!' : 'Create Account'}
+                {!loading && !success && <FiArrowRight />}
               </button>
             </form>
 

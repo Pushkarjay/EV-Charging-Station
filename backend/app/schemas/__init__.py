@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Union
+import json
 
 # User schemas
 class UserBase(BaseModel):
@@ -63,6 +64,35 @@ class StationResponse(StationBase):
     total_reviews: int
     is_active: bool
     created_at: datetime
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    
+    @field_validator('amenities', mode='before')
+    @classmethod
+    def parse_amenities(cls, v):
+        """Convert string amenities to list if needed"""
+        if isinstance(v, str):
+            if v.startswith('['):
+                try:
+                    return json.loads(v)
+                except:
+                    pass
+            # Handle comma-separated string
+            return [x.strip() for x in v.split(',') if x.strip()]
+        return v or []
+    
+    @field_validator('charger_types', mode='before')
+    @classmethod
+    def parse_charger_types(cls, v):
+        """Convert string charger_types to list if needed"""
+        if isinstance(v, str):
+            if v.startswith('['):
+                try:
+                    return json.loads(v)
+                except:
+                    pass
+            return [x.strip() for x in v.split(',') if x.strip()]
+        return v or []
     
     class Config:
         from_attributes = True

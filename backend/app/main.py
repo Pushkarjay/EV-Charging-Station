@@ -43,8 +43,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Middleware
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
+# Middleware - CORS should be added LAST to wrap all other middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -52,18 +51,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
 
 # Routes
 if auth:
-    app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+    app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 if stations:
-    app.include_router(stations.router, prefix="/stations", tags=["Stations"])
+    app.include_router(stations.router, prefix="/api/stations", tags=["Stations"])
 if bookings:
-    app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
+    app.include_router(bookings.router, prefix="/api/bookings", tags=["Bookings"])
 if users:
-    app.include_router(users.router, prefix="/users", tags=["Users"])
+    app.include_router(users.router, prefix="/api/users", tags=["Users"])
 if payments:
-    app.include_router(payments.router, prefix="/payments", tags=["Payments"])
+    app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 
 # Health check
 @app.get("/health", tags=["Health"])
