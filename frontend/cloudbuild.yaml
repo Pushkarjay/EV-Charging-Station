@@ -4,40 +4,34 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/ev-charging-frontend:latest'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/ev-charging-frontend:$SHORT_SHA'
+      - 'gcr.io/gcs-ev-charging-station/ev-charging-frontend:latest'
       - '.'
 
   # Step 2: Push the image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/ev-charging-frontend:latest'
+      - 'gcr.io/gcs-ev-charging-station/ev-charging-frontend:latest'
 
   # Step 3: Deploy to Cloud Run
-  - name: 'gcr.io/cloud-builders/run'
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    env:
+      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=ev-charging-frontend'
+    entrypoint: gcloud
     args:
+      - 'run'
       - 'deploy'
       - 'ev-charging-frontend'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/ev-charging-frontend:latest'
+      - 'gcr.io/gcs-ev-charging-station/ev-charging-frontend:latest'
       - '--region'
       - 'us-central1'
-      - '--platform'
-      - 'managed'
       - '--allow-unauthenticated'
-      - '--memory'
-      - '256Mi'
-      - '--timeout'
-      - '3600'
-      - '--max-instances'
-      - '100'
 
 images:
-  - 'gcr.io/$PROJECT_ID/ev-charging-frontend:latest'
-  - 'gcr.io/$PROJECT_ID/ev-charging-frontend:$SHORT_SHA'
+  - 'gcr.io/gcs-ev-charging-station/ev-charging-frontend:latest'
 
 timeout: '1800s'
 options:
-  machineType: 'N1_HIGHCPU_8'
+  machineType: 'E2_HIGHCPU_8'
